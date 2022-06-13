@@ -5,7 +5,7 @@ import { Card, Icon, Image, Grid, Header, Segment } from "semantic-ui-react";
 import Loader from "./Loader";
 
 const UserCard = ({ selectedUser, setSelectedUser }) => {
-  const { userId } = useParams();
+  const { userId = selectedUser } = useParams();
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const { first_name, last_name, email, avatar } = user;
@@ -30,6 +30,11 @@ const UserCard = ({ selectedUser, setSelectedUser }) => {
     return () => setUser({});
   }, [userId, selectedUser, setSelectedUser]);
 
+  const isUserEmpty =
+    user &&
+    Object.keys(user).length === 0 &&
+    Object.getPrototypeOf(user) === Object.prototype;
+
   return (
     <Segment>
       <Grid textAlign="center" columns={3}>
@@ -37,6 +42,13 @@ const UserCard = ({ selectedUser, setSelectedUser }) => {
           {userId ? (
             loading ? (
               <Loader />
+            ) : isUserEmpty ? (
+              <Segment placeholder>
+                <Header icon>
+                  <Icon name="user" />
+                  User is not found.
+                </Header>
+              </Segment>
             ) : (
               <Card>
                 <Image src={avatar} wrapped ui={false} />
